@@ -1,43 +1,43 @@
-#include "printf.h"
+#include "main.h"
 
 /**
- * _printf - Custom printf function supporting %c, %s, and %%
- * @format: Format string containing conversion specifiers
- *         (%c for characters, %s for strings, and %% for percent sign)
+ * handle_format_specifier - handles format specifier conversion and adds it to the buffer
+ * @ptr: pointer to the current character in the format string
+ * @args: variadic arguments list
+ * @buffer: the buffer to which the converted specifier needs to be added
+ * @count: the count of characters in the buffer
  *
- * Return: The number of characters printed (excluding the null byte)
+ * Return: Nothing
  */
 
-int _printf(const char *format, ...) {
-    va_list args;
-    va_start(args, format);
+void handle_format_string(const char *format, va_list args, char buffer[], int *count) {
+    const char *ptr;
+    for (ptr = format; *ptr != '\0'; ptr++) {
+        if (*count >= 1024)
+            write_buffer(buffer, count);
 
-    int count = 0; 
-
-    while (*format != '\0') {
-        if (*format == '%') {
-            format++;  
-
-            switch (*format) {
-                case 'c':
-                    count += putchar(va_arg(args, int));
-                    break;
-                case 's':
-                    count += printf("%s", va_arg(args, char *));
-                    break;
-                case '%':
-                    count += putchar('%');
-		break;
-		default:
-		break;
-            }
-        } else {
-            count += putchar(*format);
+        if (*ptr == '%') {
+            ptr++;
+            handle_format_specifier(&ptr, args, buffer, count);
         }
-
-        format++;  /* move to the next character in the format string */
+        else {
+            buffer[(*count)++] = *ptr;
+        }
     }
+    write_buffer(buffer, count);
+}
 
-    va_end(args);
-    return count;
+/**
+ * handle_format_string - handles the entire format string and its conversion
+ * @format: the format string
+ * @args: variadic arguments list
+ * @buffer: the buffer to which the converted string needs to be added
+ * @count: the count of characters in the buffer
+ *
+ * Return: Nothing
+ */
+
+void handle_format_specifier(const char **ptr, va_list args, char buffer[], int *count) {
+    switch (**ptr) {
+    }
 }

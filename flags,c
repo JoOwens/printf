@@ -1,0 +1,60 @@
+#include "main.h"
+
+/**
+ * handle_format_specifier - handles format specifier conversion and adds it to the buffer
+ * @ptr: pointer to the current character in the format string
+ * @args: variadic arguments list
+ * @buffer: the buffer to which the converted specifier needs to be added
+ * @count: the count of characters in the buffer
+ */
+
+void handle_rot13(va_list args, char buffer[], int *count) {
+    char *str = va_arg(args, char *);
+    if (str == NULL)
+        str = "(null)";
+
+    int i;
+    for (i = 0; str[i] != '\0'; i++) {
+        if (str[i] >= 'A' && str[i] <= 'Z')
+            buffer[(*count)++] = (((str[i] - 'A') + 13) % 26) + 'A';
+        else if (str[i] >= 'a' && str[i] <= 'z')
+            buffer[(*count)++] = (((str[i] - 'a') + 13) % 26) + 'a';
+        else
+            buffer[(*count)++] = str[i];
+
+        if (*count >= 1024)
+            write_buffer(buffer, count);
+    }
+}
+
+/**
+ * handle_character - handles character printing and adds it to the buffer
+ * @ptr: pointer to the current character in the format string
+ * @buffer: the buffer to which the character needs to be added
+ * @count: the count of characters in the buffer
+ */
+
+void handle_character(const char **ptr, char buffer[], int *count) {
+    buffer[(*count)++] = **ptr;
+}
+
+/**
+ * write_buffer - writes the buffer to standard output
+ * @buffer: the buffer containing characters to be written
+ * @count: the count of characters in the buffer
+ */
+
+void write_buffer(char buffer[], int *count) {
+    if (*count > 0) {
+        write(1, buffer, *count);
+        *count = 0;
+    }
+}
+
+
+void write_buffer(char buffer[], int *count) {
+    if (*count > 0) {
+        write(1, buffer, *count);
+        *count = 0;
+    }
+}
